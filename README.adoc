@@ -1,2 +1,2 @@
 User Service 
-image::images/microservicesGraph.jpg[align="left", width=300]
+image::./images/microservicesGraph.jpg[align="left", width=300]
