@@ -1,6 +1,7 @@
 package com.brokagehouse.userservice.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -12,6 +13,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.mvcMatcher("/**")
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/user/create") // Endpoint POST /user/create będzie wykluczony z zabezpieczeń
+                .permitAll()
                 .mvcMatchers("/**")
                 .access("hasAuthority('SCOPE_message.read')")
                 .and()
