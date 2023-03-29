@@ -24,6 +24,12 @@ public class UserController {
     UserService userService;
     DtoMapper dtoMapper;
 
+    @GetMapping("/home")
+    public ResponseEntity<String> home() {
+        return ResponseEntity.ok("home...");
+    }
+
+
     @PostMapping("/create")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
         User user = userService.createUser(

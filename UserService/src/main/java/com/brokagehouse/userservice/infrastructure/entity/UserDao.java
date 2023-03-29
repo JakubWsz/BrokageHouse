@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.File;
 import java.time.LocalDateTime;
 

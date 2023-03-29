@@ -1,10 +1,9 @@
 package com.brokagehouse.userservice.domain.model;
 
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-
-import javax.persistence.Embeddable;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data

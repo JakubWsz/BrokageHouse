@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.concurrent.CompletableFuture;
+
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -21,21 +23,29 @@ public class KafkaProducer {
 
     public void push(Object object, String topic) {
         try {
-            ListenableFuture<SendResult<String, String>> futureSendResult
+            CompletableFuture<SendResult<String, String>> futureSendResult
                     = kafkaTemplate.send(topic, objectMapper.writeValueAsString(object));
-            futureSendResult.addCallback(new ListenableFutureCallback<>() {
-                @Override
-                public void onFailure(Throwable ex) {
-                    log.error("Exception occurred during sending data to statistics", ex);
-                }
 
-                @Override
-                public void onSuccess(SendResult<String, String> result) {
-                    log.info("Sent data to Validation Service");
-                    log.debug("Sent '{}' to Validation Service offset '{}'", result.getProducerRecord().value(),
-                            result.getRecordMetadata().offset());
-                }
+            //TODO: handle failure
+            futureSendResult.whenComplete((res, ex) -> {
+                log.info("Sent data to Validation Service");
+                log.debug("Sent '{}' to Validation Service offset '{}'", res.getProducerRecord().value(),
+                        res.getRecordMetadata().offset());
             });
+
+//            futureSendResult.acceptEither(new ListenableFutureCallback<>() {
+//                @Override
+//                public void onFailure(Throwable ex) {
+//                    log.error("Exception occurred during sending data to statistics", ex);
+//                }
+//
+//                @Override
+//                public void onSuccess(SendResult<String, String> result) {
+//                    log.info("Sent data to Validation Service");
+//                    log.debug("Sent '{}' to Validation Service offset '{}'", result.getProducerRecord().value(),
+//                            result.getRecordMetadata().offset());
+//                }
+//            });
         } catch (Exception e) {
             log.error("Exception occurred during sending data to Validation Service", e);
         }
