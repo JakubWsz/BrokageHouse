@@ -21,34 +21,19 @@ public class KafkaProducer {
     KafkaTemplate<String, String> kafkaTemplate;
     ObjectMapper objectMapper;
 
-    public void push(Object object, String topic) {
-        try {
-            CompletableFuture<SendResult<String, String>> futureSendResult
-                    = kafkaTemplate.send(topic, objectMapper.writeValueAsString(object));
-
-            //TODO: handle failure
-            futureSendResult.whenComplete((res, ex) -> {
+    public CompletableFuture<Void> push(Object object, String topic) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                SendResult<String, String> result = kafkaTemplate.send(topic, objectMapper.writeValueAsString(object)).get();
                 log.info("Sent data to Validation Service");
-                log.debug("Sent '{}' to Validation Service offset '{}'", res.getProducerRecord().value(),
-                        res.getRecordMetadata().offset());
-            });
-
-//            futureSendResult.acceptEither(new ListenableFutureCallback<>() {
-//                @Override
-//                public void onFailure(Throwable ex) {
-//                    log.error("Exception occurred during sending data to statistics", ex);
-//                }
-//
-//                @Override
-//                public void onSuccess(SendResult<String, String> result) {
-//                    log.info("Sent data to Validation Service");
-//                    log.debug("Sent '{}' to Validation Service offset '{}'", result.getProducerRecord().value(),
-//                            result.getRecordMetadata().offset());
-//                }
-//            });
-        } catch (Exception e) {
-            log.error("Exception occurred during sending data to Validation Service", e);
-        }
+                log.debug("Sent '{}' to Validation Service offset '{}'", result.getProducerRecord().value(),
+                        result.getRecordMetadata().offset());
+                return null;
+            } catch (Exception e) {
+                log.error("Exception occurred during sending data to Validation Service", e);
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
 

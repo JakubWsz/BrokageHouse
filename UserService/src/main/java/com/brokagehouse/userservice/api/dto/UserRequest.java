@@ -13,7 +13,7 @@ public class UserRequest {
     String firstname;
     String lastname;
     String emailAddress;
-    String password;
+    char[] password;
     Long phoneNumber;
     String personalIdNumber;
     Address address;

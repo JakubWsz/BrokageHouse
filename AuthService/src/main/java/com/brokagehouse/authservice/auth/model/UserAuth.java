@@ -29,6 +29,14 @@ public class UserAuth implements UserDetails {
         this.roles = roles;
     }
 
+    public UserAuth(int id, String username, String password, boolean enabled, List<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+        this.roles = roles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()

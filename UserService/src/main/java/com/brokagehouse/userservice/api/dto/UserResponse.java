@@ -11,7 +11,6 @@ public class UserResponse {
     String firstname;
     String lastname;
     String emailAddress;
-    String password;
     Long phoneNumber;
     String personalIdNumber;
     Address address;

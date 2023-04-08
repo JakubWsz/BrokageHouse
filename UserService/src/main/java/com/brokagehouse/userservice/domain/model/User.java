@@ -14,7 +14,6 @@ public class User {
     String firstname;
     String lastname;
     String emailAddress;
-    String password;
     Long phoneNumber;
     String personalIdNumber;
     Address address;
@@ -22,24 +21,22 @@ public class User {
     boolean verified;
     LocalDateTime modificationDate;
 
-    public User(String firstname, String lastname, String emailAddress, String password,
+    public User(String firstname, String lastname, String emailAddress,
                 Long phoneNumber, String personalIdNumber, Address address, File personalIdPhoto) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.emailAddress = emailAddress;
-        this.password = password;
         this.phoneNumber = phoneNumber;
         this.personalIdNumber = personalIdNumber;
         this.address = address;
         this.personalIdPhoto = personalIdPhoto;
     }
 
-    public User(String firstname, String lastname, String emailAddress, String password, Long phoneNumber,
+    public User(String firstname, String lastname, String emailAddress, Long phoneNumber,
                 String personalIdNumber, Address address, File personalIdPhoto, LocalDateTime modificationDate) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.emailAddress = emailAddress;
-        this.password = password;
         this.phoneNumber = phoneNumber;
         this.personalIdNumber = personalIdNumber;
         this.address = address;
