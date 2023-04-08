@@ -24,7 +24,6 @@ public class UserDao {
     @NaturalId
     @Column(unique = true)
     String emailAddress;
-    String password;
     Long phoneNumber;
     @NaturalId
     @Column(unique = true)
@@ -42,7 +41,6 @@ public class UserDao {
         this.firstname = user.getFirstname();
         this.lastname = user.getLastname();
         this.emailAddress = user.getEmailAddress();
-        this.password = user.getPassword();
         this.phoneNumber = user.getPhoneNumber();
         this.personalIdNumber = user.getPersonalIdNumber();
         this.address = user.getAddress();
@@ -61,10 +59,6 @@ public class UserDao {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setPhoneNumber(Long phoneNumber) {

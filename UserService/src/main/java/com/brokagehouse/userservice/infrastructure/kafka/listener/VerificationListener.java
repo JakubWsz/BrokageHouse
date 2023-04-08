@@ -1,7 +1,7 @@
 package com.brokagehouse.userservice.infrastructure.kafka.listener;
 
 import com.brokagehouse.userservice.domain.service.UserRepository;
-import com.brokagehouse.userservice.infrastructure.VerificationResult;
+import com.brokagehouse.userservice.infrastructure.kafka.dto.VerificationResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ public class VerificationListener {
 
     @KafkaListener(topics = "verify-user", groupId = "group-1")
     public void listen(String value) {
-        log.info("mapping car {} ", value);
+        log.info("Mapping user {} ", value);
         try {
             userRepository.verify(objectMapper.readValue(value, VerificationResult.class));
         } catch (Exception e) {
-            log.error("Exception occurred during mapping car data: ", e);
+            log.error("Exception occurred during mapping user data: ", e);
         }
     }
 }

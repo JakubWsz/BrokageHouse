@@ -2,7 +2,7 @@ package com.brokagehouse.userservice.infrastructure.adapter;
 
 import com.brokagehouse.userservice.domain.model.User;
 import com.brokagehouse.userservice.domain.service.UserRepository;
-import com.brokagehouse.userservice.infrastructure.VerificationResult;
+import com.brokagehouse.userservice.infrastructure.kafka.dto.VerificationResult;
 import com.brokagehouse.userservice.infrastructure.entity.UserDao;
 import com.brokagehouse.userservice.infrastructure.exception.DbExceptionCode;
 import com.brokagehouse.userservice.infrastructure.mapper.DaoMapper;

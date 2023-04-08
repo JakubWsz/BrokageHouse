@@ -1,7 +1,7 @@
 package com.brokagehouse.userservice.domain.service;
 
 import com.brokagehouse.userservice.domain.model.User;
-import com.brokagehouse.userservice.infrastructure.VerificationResult;
+import com.brokagehouse.userservice.infrastructure.kafka.dto.VerificationResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

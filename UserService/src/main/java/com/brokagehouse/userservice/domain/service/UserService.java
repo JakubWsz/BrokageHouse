@@ -3,6 +3,7 @@ package com.brokagehouse.userservice.domain.service;
 import com.brokagehouse.userservice.domain.exception.DomainExceptionCode;
 import com.brokagehouse.userservice.domain.model.Address;
 import com.brokagehouse.userservice.domain.model.User;
+import com.brokagehouse.userservice.infrastructure.kafka.dto.UserCredentials;
 import com.brokagehouse.userservice.infrastructure.kafka.producer.KafkaProducer;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,30 +22,34 @@ import java.util.concurrent.ExecutorService;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    static String CREATE_USER_TOPIC = "create-user";
+    static String TO_VERIFICATION_USER_TOPIC = "to-verification-user";
+    static String REGISTER_USER_TOPIC = "register-user";
+    static String UPDATE_USER_TOPIC = "update-user";
     UserRepository userRepository;
     KafkaProducer kafkaProducer;
     ExecutorService executorService;
 
     public User createUser(
-            String firstname, String lastname, String emailAddress, String password,
+            String firstname, String lastname, String emailAddress, char[] password,
             Long phoneNumber, String personalIdNumber, Address address, File personalIdPhoto
     ) {
-        var user = new User(firstname, lastname, emailAddress, password, phoneNumber, personalIdNumber,
+        var user = new User(firstname, lastname, emailAddress, phoneNumber, personalIdNumber,
                 address, personalIdPhoto);
 
         validateUser(user);
 
-        executorService.submit(() -> kafkaProducer.push(user, CREATE_USER_TOPIC));
+        executorService.submit(() -> kafkaProducer.push(user, TO_VERIFICATION_USER_TOPIC));
+        executorService.submit(() -> kafkaProducer.push(
+                new UserCredentials(user.getEmailAddress(), password),
+                REGISTER_USER_TOPIC));
 
         return userRepository.save(user);
     }
 
-    public User updateUser(Address address, Long phoneNumber, String password, String email) {
+    public User updateUser(Address address, Long phoneNumber, char[] password, String email) {
         var fromDb = userRepository.findByEmail(email);
         Address addressToSave;
         Long phoneNumberToSave;
-        String passwordToSave;
 
         if (address == null) {
             addressToSave = fromDb.getAddress();
@@ -52,15 +57,14 @@ public class UserService {
         if (phoneNumber == null) {
             phoneNumberToSave = fromDb.getPhoneNumber();
         } else phoneNumberToSave = phoneNumber;
-        if (password == null) {
-            passwordToSave = fromDb.getPassword();
-        } else passwordToSave = password;
+        if (password != null) {
+            executorService.submit(() -> kafkaProducer.push(new UserCredentials(email, password), UPDATE_USER_TOPIC));
+        }
 
         var toUpdate = new User(
                 fromDb.getFirstname(),
                 fromDb.getLastname(),
                 fromDb.getEmailAddress(),
-                passwordToSave,
                 phoneNumberToSave,
                 fromDb.getPersonalIdNumber(),
                 addressToSave,
